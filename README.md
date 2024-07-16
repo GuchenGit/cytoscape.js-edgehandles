@@ -23,6 +23,47 @@ You can use [Popper](https://github.com/cytoscape/cytoscape.js-popper) to create
 
 ## Usage instructions
 
+### In the browser
+This differs from the other approach since this repository removes the *externals* from the webpack config. This means that *lodash* isn't required as a dependency anymore since it is bundled in the final file which is desirable when working in the web as that simply isn't available.
+
+Get the library:
+ * build it yourself by cloning this repo, nunning `npm i` and then `npm run build:min`
+  * this will create a cytoscape-edgehandles.js that is minified
+  * if you don't want it minified, run `npm run build` or `npm run build:release` instead
+ * or just download the built file called `cytoscape-edgehandles.js`
+
+Load the script:
+```html
+<script src="/static/cytoscape-edgehandles.js"></script>
+```
+
+Initialize the library:
+```js
+const cy = cytoscape({ ... });
+// the default values of each option are outlined below:
+let defaults = {
+    canConnect: function (sourceNode, targetNode) {
+        // whether an edge can be created between source and target
+        return !sourceNode.same(targetNode); // e.g. disallow loops
+    },
+    edgeParams: function (sourceNode, targetNode) {
+        // for edges between the specified source and target
+        // return element object to be passed to cy.add() for edge
+        return {};
+    },
+    hoverDelay: 150, // time spent hovering over a target node before it is considered selected
+    snap: true, // when enabled, the edge can be drawn by just moving close to a target node (can be confusing on compound graphs)
+    snapThreshold: 50, // the target node must be less than or equal to this many pixels away from the cursor/finger
+    snapFrequency: 15, // the number of times per second (Hz) that snap checks done (lower is less expensive)
+    noEdgeEventsInDraw: true, // set events:no to edges during draws, prevents mouseouts on compounds
+    disableBrowserGestures: true // during an edge drawing gesture, disable browser gestures such as two-finger trackpad swipe and pinch-to-zoom
+};
+
+const eh = cy.edgehandles(defaults);
+```
+
+### Other methods
+
 Download the library:
  * via npm: `npm install cytoscape-edgehandles`,
  * via bower: `bower install cytoscape-edgehandles`, or
